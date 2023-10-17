@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:imc_calculator/pages/imc_list_page.dart';
+import 'package:imc_calculator_db/models/imc_model.dart';
+import 'package:imc_calculator_db/pages/home_page.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDir = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDir.path);
+  Hive.registerAdapter(ImcModelAdapter());
+  await Hive.openBox<ImcModel>('imcBox');
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -21,7 +30,7 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Imc Calculator"),
         ),
-        body: IMCListScreen(),
+        body: HomePage(),
       ),
     );
   }
